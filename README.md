@@ -1,2 +1,2 @@
 
-# top1000.github.com
+# top1000.github.io
