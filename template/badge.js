@@ -9,7 +9,7 @@ function getParameter(name) {
         return results[1];
 } 
 
-var repoName = getParameter('org')
+var repoName = getParameter('repo')
 var place = getParameter('place')
 
 var draw = SVG('mysvg').size(200, 200)
@@ -22,8 +22,8 @@ txt.font({
     fill: '#ff0000',
 })
 
-var rect = draw.rect(txt.length(), 40)
-rect.radius(10)
+var rect = draw.rect(txt.length(), 30)
+rect.radius(5)
 
 txt.front()
 
