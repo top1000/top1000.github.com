@@ -1,2 +1,2 @@
 
-# [top1000.github.io](https://top1000.github.io/)
+# [toprated.github.io](https://toprated.github.io/)
