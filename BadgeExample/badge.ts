@@ -1,13 +1,16 @@
 function getParameter(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    var regexS = "[\\?&]" + name + "=([^&#]*)";
-    var regex = new RegExp(regexS);
-    var results = regex.exec(window.location.href);
+    const regexS = "[\\?&]" + name + "=([^&#]*)";
+    const regex = new RegExp(regexS);
+    const results = regex.exec(window.location.href);
     if (results == null)
         return "";
     else
         return results[1];
 }
+
+declare function SVG(name: string): any;
+
 var repoName = getParameter("repo");
 var place = "125";
 var radius = 3;
@@ -49,4 +52,5 @@ txt.fill("#855");
 txtRepoNameShadow.front();
 txtRepoName.front();
 txt.front();
-//# sourceMappingURL=badge.js.map
+
+

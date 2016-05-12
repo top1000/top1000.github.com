@@ -23,7 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.css" />
-    <Content Include="BadgeExample\badge.js" />
+    <TypeScriptCompile Include="BadgeExample\badge.ts" />
     <Content Include="BadgeExample\badge.svg" />
     <Content Include="BadgeExample\svg.min.js" />
     <Content Include="index.html" />
