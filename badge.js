@@ -98,7 +98,6 @@ function onLoadFunc() {
         }
         else {
             data = JSON.parse(req.responseText);
-            console.log(data);
             buildSvg(data);
         }
     };
