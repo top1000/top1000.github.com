@@ -1,6 +1,6 @@
-function getParameter(name) {
+function getParameter(name: any) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    const regexS = "[\\?&]" + name + "=([^&#]*)";
+    const regexS = `[\\?&]${name}=([^&#]*)`;
     const regex = new RegExp(regexS);
     const results = regex.exec(window.location.href);
     if (results == null)
@@ -9,6 +9,7 @@ function getParameter(name) {
         return results[1];
 }
 
+// ReSharper disable once InconsistentNaming
 declare function SVG(name: string): any;
 
 var repoName = getParameter("repo");
