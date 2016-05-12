@@ -7,7 +7,10 @@ function getParameter(name) {
         return "";
     else
         return results[1];
-} 
+}
+
+function setBackground(color) {
+}
 
 var repoName = getParameter('repo')
 var place = '125'
@@ -32,6 +35,7 @@ txtRepoName.font({
 })
 txtRepoName.size(textSize)
 txtRepoName.x(5)
+
 
 var txtRepoNameShadow = draw.text(str)
 txtRepoNameShadow.font({
