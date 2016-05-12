@@ -31,10 +31,13 @@
     <TypeScriptCompile Include="BadgeExample\colors.ts" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="app.ts">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="tsconfig.json" />
+    <Content Include="BadgeExample\tsconfig.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

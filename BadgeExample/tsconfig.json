@@ -4,10 +4,11 @@
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": true,
-    "outFile": "./app.js",
+    "outFile": "./badge.js",
     "target": "es6"
   },
   "files": [
-        "./app.ts"
+        "./badge.ts",
+        "./colors.ts"
     ]
 }
