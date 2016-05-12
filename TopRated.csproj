@@ -25,14 +25,16 @@
     <Content Include="app.css" />
     <TypeScriptCompile Include="BadgeExample\badge.ts" />
     <Content Include="BadgeExample\badge.svg" />
-    <Content Include="BadgeExample\svg.min.js" />
+    <Content Include="BadgeExample\svg.js" />
     <Content Include="index.html" />
     <Content Include="web.config" />
+    <TypeScriptCompile Include="BadgeExample\colors.ts" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tsconfig.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

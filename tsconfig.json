@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "outFile": "./BadgeExample/badge.js",
+    "target": "es6"
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}
