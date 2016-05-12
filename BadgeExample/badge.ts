@@ -11,11 +11,35 @@ function getParameter(name: string) {
         return results[1];
 }
 
+declare var require: any;
+
+interface IData {
+    place: number;
+    name: string;
+}
+
+//"./calls.json"
+/*function getData(path: string) : IData {
+    var json = require(path);
+    var data: IData = JSON.parse(json);
+    return data;
+}*/
+function getData(path: string) : IData {
+    var request = new XMLHttpRequest();
+    //request.onload = levelRequestListener;
+    request.open("get", path, true);
+    request.send();
+    var json = request.responseText;
+    var data: IData = JSON.parse(json);
+    return data;
+}
+
 // ReSharper disable once InconsistentNaming
 declare function SVG(name: string): any;
 
 var repoName = getParameter("repo");
-var place = "125";
+//var place = "125";
+var place = getData("data.json");
 var r = 3;
 var h = 20;
 var textSize = 11;

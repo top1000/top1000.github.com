@@ -38,6 +38,7 @@
   <ItemGroup>
     <Content Include="tsconfig.json" />
     <Content Include="BadgeExample\tsconfig.json" />
+    <Content Include="BadgeExample\data.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
