@@ -24,9 +24,17 @@ interface IData {
     var data: IData = JSON.parse(json);
     return data;
 }*/
+
+
 function getData(path: string) : IData {
     var request = new XMLHttpRequest();
-    //request.onload = levelRequestListener;
+
+    function levelRequestListener() {
+        var data = JSON.parse(this.responseText);
+        return data;
+    }
+
+    request.onload = levelRequestListener;
     request.open("get", path, true);
     request.send();
     var json = request.responseText;
