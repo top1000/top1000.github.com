@@ -1,4 +1,5 @@
 /// <reference path="colors.ts"/>
+/// <reference path="IData.ts"/>
 
 function getParameter(name: string) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -11,28 +12,23 @@ function getParameter(name: string) {
         return results[1];
 }
 
-interface IData {
-    name: string;
-    place: number;
-}
-
 // ReSharper disable once InconsistentNaming
 declare function SVG(name: string): any;
 
 function buildSvg(repoData: IData) {
-    var repoName = repoData.name;
-    var place = repoData.place;
-    var r = 3;
-    var h = 20;
-    var textSize = 11;
+    const repoName = repoData.name;
+    const place = repoData.place;
+    const r = 3;
+    const h = 20;
+    const textSize = 11;
     
-var draw = SVG("mysvg").size(200, h);
+const draw = SVG("mysvg").size(200, h);
 
-    var str = repoName + " is #" + place;
-    var test = "test";
-    var fontFamily = "Verdana";
+    const str = repoName + " is #" + place;
+    const test = "test";
+    const fontFamily = "Verdana";
 
-    var txtRepoName = draw.text(str);
+    const txtRepoName = draw.text(str);
     txtRepoName.size(textSize);
     txtRepoName.x(5);
     txtRepoName.fill(Colors.get(Color.Black));
@@ -41,7 +37,7 @@ var draw = SVG("mysvg").size(200, h);
         y: 0
     });
 
-    var txtRepoNameShadow = draw.text(str);
+    const txtRepoNameShadow = draw.text(str);
     txtRepoNameShadow.size(textSize);
     txtRepoNameShadow.x(5);
     txtRepoNameShadow.fill(Colors.get(Color.White));
@@ -50,11 +46,11 @@ var draw = SVG("mysvg").size(200, h);
         y: 1
     });
 
-    var rectRepoName = draw.rect(txtRepoName.length() + 10, h);
+    const rectRepoName = draw.rect(txtRepoName.length() + 10, h);
     rectRepoName.attr({ fill: Colors.get(Color.Silver) });
     rectRepoName.radius(r);
 
-    var txt = draw.text(test);
+    const txt = draw.text(test);
     txt.x(rectRepoName.width());
     txt.y(7);
     txt.fill("#855");
@@ -72,14 +68,14 @@ var draw = SVG("mysvg").size(200, h);
 function onLoadFunc() {
     const req = new XMLHttpRequest();
     var data: IData;
-    req.open("get", "data.json", true);
+    req.open("get", "./data.json", true);
     req.send();
     req.onreadystatechange = () => {
-        if ((req.status !== 200) && (req.readyState !== 4)) {
+        if (req.readyState !== 4) return;
+        if (req.status !== 200) {
             console.log(req.status + ": " + req.statusText);
         } else {
             data = JSON.parse(req.responseText);
-            console.log(data);
             buildSvg(data);
         }
     }

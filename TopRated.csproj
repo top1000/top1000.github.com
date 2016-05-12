@@ -23,12 +23,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.css" />
-    <TypeScriptCompile Include="BadgeExample\badge.ts" />
-    <Content Include="BadgeExample\badge.svg" />
-    <Content Include="BadgeExample\svg.js" />
+    <TypeScriptCompile Include="BadgeBuilding\badge.ts" />
+    <Content Include="Example\badge.svg" />
+    <Content Include="svg.js" />
     <Content Include="index.html" />
     <Content Include="web.config" />
-    <TypeScriptCompile Include="BadgeExample\colors.ts" />
+    <TypeScriptCompile Include="BadgeBuilding\colors.ts" />
+    <TypeScriptCompile Include="BadgeBuilding\IData.ts" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts">
@@ -37,8 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="tsconfig.json" />
-    <Content Include="BadgeExample\tsconfig.json" />
-    <Content Include="BadgeExample\data.json" />
+    <Content Include="BadgeBuilding\tsconfig.json" />
+    <Content Include="Example\data.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
