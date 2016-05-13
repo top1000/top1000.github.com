@@ -1,4 +1,4 @@
-var Color;
+﻿var Color;
 (function (Color) {
     Color[Color["Gold"] = 0] = "Gold";
     Color[Color["Silver"] = 1] = "Silver";
@@ -32,7 +32,7 @@ var Colors;
     Colors.get = get;
 })(Colors || (Colors = {}));
 /// <reference path="colors.ts"/>
-/// <reference path="IData.ts"/>
+/// <reference path="./interfaces/IBadgeData.ts"/>
 function getParameter(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     const regexS = `[\\?&]${name}=([^&#]*)`;
