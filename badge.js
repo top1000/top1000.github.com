@@ -28,6 +28,7 @@ class SectionStyle {
 class BadgeStyle {
     constructor() {
         this.indent = 3;
+        this.radius = 3;
         const commonFontStyle = new FontStyle("Verdana", 11, Color.black, Color.gray);
         const commonBcgColor = Color.silver;
         this.commonTextStyle = new SectionStyle(commonFontStyle, commonBcgColor);
@@ -36,7 +37,8 @@ class BadgeStyle {
 class DarkBadgeStyle {
     constructor() {
         this.indent = 3;
-        const commonFontStyle = new FontStyle("Verdana", 11, Color.white, Color.gray);
+        this.radius = 3;
+        const commonFontStyle = new FontStyle("Verdana", 11, Color.white, Color.white);
         const commonBcgColor = Color.black;
         this.commonTextStyle = new SectionStyle(commonFontStyle, commonBcgColor);
     }
@@ -44,7 +46,8 @@ class DarkBadgeStyle {
 class LightBadgeStyle {
     constructor() {
         this.indent = 3;
-        const commonFontStyle = new FontStyle("DejaVu Sans,Verdana,Geneva,sans-serif", 11, Color.black, Color.gray);
+        this.radius = 3;
+        const commonFontStyle = new FontStyle("DejaVu Sans,Verdana,Geneva,sans-serif", 11, Color.black, Color.black);
         const commonBcgColor = Color.silver;
         this.commonTextStyle = new SectionStyle(commonFontStyle, commonBcgColor);
     }
@@ -78,6 +81,25 @@ class UrlHelper {
         }
     }
 }
+var BuildType;
+(function (BuildType) {
+    BuildType[BuildType["Full"] = 0] = "Full";
+    BuildType[BuildType["InsideSvg"] = 1] = "InsideSvg";
+})(BuildType || (BuildType = {}));
+var SectionType;
+(function (SectionType) {
+    SectionType[SectionType["Left"] = 0] = "Left";
+    SectionType[SectionType["Right"] = 1] = "Right";
+    SectionType[SectionType["Middle"] = 2] = "Middle";
+})(SectionType || (SectionType = {}));
+HTMLElement.prototype.setWidth = function (value) {
+    this.setAttribute("width", String(value));
+    return this;
+};
+HTMLElement.prototype.setHeight = function (value) {
+    this.setAttribute("height", String(value));
+    return this;
+};
 SVGSVGElement.prototype.setWidth = function (value) {
     this.setAttribute("width", String(value));
     return this;
@@ -106,281 +128,317 @@ SVGTextElement.prototype.fill = function (value) {
     this.setAttribute("fill", value);
     return this;
 };
-SVGTextElement.prototype.getTextRect = function () {
+SVGTextElement.prototype.fillOpacity = function (value) {
+    this.setAttribute("fill-opacity", value);
+    return this;
+};
+SVGTextElement.prototype.getTextRect = function (caller = undefined) {
     const el = this;
+    let rect;
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.id = "svg-id";
     svg.appendChild(el);
-    document.body.appendChild(svg);
-    const rect = el.getBBox();
-    document.body.removeChild(svg);
+    if (document.body === null) {
+        document.getElementById(caller.id).appendChild(svg);
+        rect = el.getBBox();
+        document.getElementById(caller.id).removeChild(svg);
+    }
+    else {
+        document.body.appendChild(svg);
+        rect = el.getBBox();
+        document.body.removeChild(svg);
+    }
     return rect;
 };
-SVGRectElement.prototype.setX = function (value) {
-    this.setAttribute("x", String(value));
-    return this;
-};
-SVGRectElement.prototype.setY = function (value) {
-    this.setAttribute("y", String(value));
-    return this;
-};
-SVGRectElement.prototype.setRx = function (value) {
-    this.setAttribute("rx", String(value));
-    return this;
-};
-SVGRectElement.prototype.setRy = function (value) {
-    this.setAttribute("ry", String(value));
-    return this;
-};
-SVGRectElement.prototype.setR = function (value) {
-    this
-        .setRx(value)
-        .setRy(value);
-    return this;
-};
-SVGRectElement.prototype.setWidth = function (value) {
-    this.setAttribute("width", String(value));
-    return this;
-};
-SVGRectElement.prototype.setHeight = function (value) {
-    this.setAttribute("height", String(value));
-    return this;
-};
-SVGRectElement.prototype.fill = function (value) {
-    this.setAttribute("fill", value);
-    return this;
-};
-class HtmlElementHelper {
-    constructor(el) {
-        this.e = el;
-        this.txt = el.innerText;
-        this.fontname = el.getAttribute("font-family");
-        this.fontsize = el.getAttribute("font-size");
-    }
-    getWidthOfText() {
-        const c = document.createElement("canvas");
-        const ctx = c.getContext("2d");
-        ctx.font = this.fontsize + "px" + this.fontname;
-        const length = ctx.measureText(this.txt).width;
-        return length;
-    }
-}
-class SvgTextElementHelper {
-    constructor(el) {
-        this.e = el;
-        this.txt = el.textContent;
-        this.fontname = el.getAttribute("font-family");
-        this.fontsize = el.getAttribute("font-size");
-    }
-    getWidthOfText() {
-        const c = document.createElement("canvas");
-        const ctx = c.getContext("2d");
-        ctx.font = this.fontsize + "px" + this.fontname;
-        const length = ctx.measureText(this.txt).width;
-        console.log("w = " + length);
-        return length;
-    }
-}
-class SvgTagsHelper {
-    static createSvg(id = "") {
-        const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        if (id !== "") {
-            el.id = id;
+    SVGRectElement.prototype.setX = function (value) {
+        this.setAttribute("x", String(value));
+        return this;
+    };
+    SVGRectElement.prototype.setY = function (value) {
+        this.setAttribute("y", String(value));
+        return this;
+    };
+    SVGRectElement.prototype.setRx = function (value) {
+        this.setAttribute("rx", String(value));
+        return this;
+    };
+    SVGRectElement.prototype.setRy = function (value) {
+        this.setAttribute("ry", String(value));
+        return this;
+    };
+    SVGRectElement.prototype.setR = function (value) {
+        this
+            .setRx(value)
+            .setRy(value);
+        return this;
+    };
+    SVGRectElement.prototype.setWidth = function (value) {
+        this.setAttribute("width", String(value));
+        return this;
+    };
+    SVGRectElement.prototype.setHeight = function (value) {
+        this.setAttribute("height", String(value));
+        return this;
+    };
+    SVGRectElement.prototype.fill = function (value) {
+        this.setAttribute("fill", value);
+        return this;
+    };
+    class SvgTextElementHelper {
+        constructor(el) {
+            this.e = el;
+            this.txt = el.textContent;
+            this.fontname = el.getAttribute("font-family");
+            this.fontsize = el.getAttribute("font-size");
         }
-        return el;
-    }
-    static createRect(id = "") {
-        const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        if (id !== "") {
-            el.id = id;
+        getWidthOfText() {
+            const c = document.createElement("canvas");
+            const ctx = c.getContext("2d");
+            ctx.font = this.fontsize + "px" + this.fontname;
+            const length = ctx.measureText(this.txt).width;
+            console.log("w = " + length);
+            return length;
         }
-        return el;
     }
-    static p(x, y) {
-        return x + " " + y + " ";
-    }
-    static createRoundedRect(x, y, w, h, r1, r2, r3, r4, color) {
-        const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        let path = "M" + this.p(x + r1, y);
-        path += "L" + this.p(x + w - r2, y) + "Q" + this.p(x + w, y) + this.p(x + w, y + r2);
-        path += "L" + this.p(x + w, y + h - r3) + "Q" + this.p(x + w, y + h) + this.p(x + w - r3, y + h);
-        path += "L" + this.p(x + r4, y + h) + "Q" + this.p(x, y + h) + this.p(x, y + h - r4);
-        path += "L" + this.p(x, y + r1) + "Q" + this.p(x, y) + this.p(x + r1, y);
-        path += "Z";
-        el.setAttribute("d", path);
-        el.setAttribute("fill", color);
-        return el;
-    }
-    static createText(text = "") {
-        const el = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        if (text !== "") {
-            el.textContent = text;
+    class SvgTagsHelper {
+        static createSvg(id = "") {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            if (id !== "") {
+                el.id = id;
+            }
+            return el;
         }
-        return el;
-    }
-    static createG(id = "") {
-        const el = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        if (id !== "") {
-            el.id = id;
+        static createRect(id = "") {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            if (id !== "") {
+                el.id = id;
+            }
+            return el;
         }
-        return el;
-    }
-    static getRectText(text, fontStyle) {
-        const rect = this
-            .createText(text)
-            .fontFamily(fontStyle.fontFamily)
-            .fontSize(fontStyle.fontSize)
-            .fill(fontStyle.fontColor)
-            .getTextRect();
-        return rect;
-    }
-}
-class Badge {
-    constructor(element) {
-        this.targetHtmlElement = element;
-        const badgeStyle = this.getStyle();
-        this.style = badgeStyle;
-    }
-    getStyle() {
-        let style;
-        const urlHelper = new UrlHelper();
-        const theme = urlHelper.getTheme();
-        switch (theme) {
-            case Theme.Dark:
-                style = new DarkBadgeStyle();
-                break;
-            case Theme.Light:
-                style = new LightBadgeStyle();
-                break;
-            default:
-                style = new LightBadgeStyle();
-                break;
+        static p(x, y) {
+            return x + " " + y + " ";
         }
-        return style;
-    }
-    buildSvg(badgeStyle, badgeData) {
-        const badge = SvgTagsHelper.createSvg("svg-badge");
-        const badgeMainGroup = SvgTagsHelper.createG("main-group");
-        let badgeWidth = 0;
-        let badgeHeight = 0;
-        for (let section of badgeData.sections) {
-            const fontStyle = badgeStyle.commonTextStyle.fontStyle;
-            const sectionTextRect = SvgTagsHelper.getRectText(section.text, fontStyle);
-            const sectionWidth = badgeStyle.indent * 2 + sectionTextRect.width;
-            const sectionHeight = badgeStyle.indent * 2 + sectionTextRect.height;
-            const sectionText = SvgTagsHelper.createText(section.text);
-            sectionText
+        static createLinearGradient(id, x1, y1, x2, y2, offset1, offset2, stopColor1, stopColor2, opacity = "0.2") {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+            el.setAttribute("id", id);
+            el.setAttribute("x1", x1);
+            el.setAttribute("x2", x2);
+            el.setAttribute("y1", y1);
+            el.setAttribute("y2", y2);
+            const stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+            stop1.setAttribute("offset", offset1);
+            stop1.setAttribute("stop-color", stopColor1);
+            stop1.setAttribute("stop-opacity", opacity);
+            const stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+            stop2.setAttribute("offset", offset2);
+            stop2.setAttribute("stop-color", stopColor2);
+            stop2.setAttribute("stop-opacity", opacity);
+            el.appendChild(stop1);
+            el.appendChild(stop2);
+            return el;
+        }
+        static createSection(sectionType, x, y, w, h, r, color) {
+            switch (sectionType) {
+                case SectionType.Left:
+                    return this.createRoundedRect(x, y, w + 1, h, r, 0, 0, r, color);
+                case SectionType.Right:
+                    return this.createRoundedRect(x, y, w, h, 0, r, r, 0, color);
+                case SectionType.Middle:
+                    return this.createRoundedRect(x, y, w + 1, h, 0, 0, 0, 0, color);
+                default:
+                    throw Error("Unknown SectionType!");
+            }
+        }
+        static createSimpleRoundedRect(x, y, w, h, r, color) {
+            return this.createRoundedRect(x, y, w, h, r, r, r, r, color);
+        }
+        static createRoundedRect(x, y, w, h, r1, r2, r3, r4, color) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            let path = `M${this.p(x + r1, y)}`;
+            path += `L${this.p(x + w - r2, y)}Q${this.p(x + w, y)}${this.p(x + w, y + r2)}`;
+            path += `L${this.p(x + w, y + h - r3)}Q${this.p(x + w, y + h)}${this.p(x + w - r3, y + h)}`;
+            path += `L${this.p(x + r4, y + h)}Q${this.p(x, y + h)}${this.p(x, y + h - r4)}`;
+            path += `L${this.p(x, y + r1)}Q${this.p(x, y)}${this.p(x + r1, y)}`;
+            path += "Z";
+            el.setAttribute("d", path);
+            el.setAttribute("fill", color);
+            return el;
+        }
+        static createText(text = "") {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            if (text !== "") {
+                el.textContent = text;
+            }
+            return el;
+        }
+        static createG(id = "") {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            if (id !== "") {
+                el.id = id;
+            }
+            return el;
+        }
+        static getRectText(text, fontStyle, caller = undefined) {
+            const rect = this
+                .createText(text)
                 .fontFamily(fontStyle.fontFamily)
                 .fontSize(fontStyle.fontSize)
                 .fill(fontStyle.fontColor)
-                .setX(badgeWidth + sectionWidth / 2)
-                .setY(sectionHeight / 2);
-            sectionText.setAttribute("text-anchor", "middle");
-            sectionText.setAttribute("alignment-baseline", "central");
-            const sectionTextShadow = SvgTagsHelper.createText(section.text);
-            sectionTextShadow
-                .fontFamily(fontStyle.fontFamily)
-                .fontSize(fontStyle.fontSize)
-                .fill(fontStyle.fontShadowColor)
-                .setX(badgeWidth + sectionWidth / 2)
-                .setY(sectionHeight / 2 + 1);
-            sectionTextShadow.setAttribute("text-anchor", "middle");
-            sectionTextShadow.setAttribute("alignment-baseline", "central");
-            const sectionRect = SvgTagsHelper.createRoundedRect(badgeWidth, 0, sectionWidth, sectionHeight, 1, 3, 5, 7, section.bcgColor);
-            badgeWidth += sectionWidth;
-            if (badgeHeight < sectionHeight) {
-                badgeHeight = sectionHeight;
-            }
-            badgeMainGroup.appendChild(sectionRect);
-            badgeMainGroup.appendChild(sectionTextShadow);
-            badgeMainGroup.appendChild(sectionText);
+                .getTextRect(caller);
+            return rect;
         }
-        badge.appendChild(badgeMainGroup);
-        badge
-            .setWidth(badgeWidth)
-            .setHeight(badgeHeight);
-        this.targetHtmlElement.appendChild(badge);
+        }
+        class BadgeSectionHelper {
+        static getSectionType(currentSectionNumber, badgeSectionsCount) {
+            if (currentSectionNumber === 1) {
+                return SectionType.Left;
+            }
+            else if (currentSectionNumber >= 1 && currentSectionNumber < badgeSectionsCount) {
+                return SectionType.Middle;
+            }
+            else if (currentSectionNumber === badgeSectionsCount) {
+                return SectionType.Right;
+            }
+            throw Error(`Can not get SectionType for section ${currentSectionNumber} of total ${badgeSectionsCount} sections.`);
+        }
     }
-    buildBadge(badgeDataPath) {
-        let data;
-        const req = new XMLHttpRequest();
-        req.open("get", badgeDataPath, true);
-        req.send();
-        req.onreadystatechange = () => {
-            if (req.readyState !== 4)
-                return;
-            if (req.status !== 200) {
-                console.log(`Error while loading .json data! Request status: ${req.status} : ${req.statusText}`);
+    class Badge {
+        constructor() {
+            const badgeStyle = this.getStyle();
+            this.style = badgeStyle;
+        }
+        setHtmlTarget(target) {
+            this.targetHtmlElement = target;
+        }
+        setSvgTarget(target) {
+            this.targetSvgElement = target;
+        }
+        setCaller(caller) {
+            this.caller = caller;
+        }
+        getStyle() {
+            let style;
+            const urlHelper = new UrlHelper();
+            const theme = urlHelper.getTheme();
+            switch (theme) {
+                case Theme.Dark:
+                    style = new DarkBadgeStyle();
+                    break;
+                case Theme.Light:
+                    style = new LightBadgeStyle();
+                    break;
+                default:
+                    style = new LightBadgeStyle();
+                    break;
             }
-            else {
-                data = JSON.parse(req.responseText);
-                this.buildSvg(this.style, data);
+            return style;
+        }
+        buildSvg(badgeStyle, badgeData, buildType) {
+            const badgeMainGroup = SvgTagsHelper.createG("main-group");
+            let badgeWidth = 0;
+            let badgeHeight = 0;
+            const sectionsCount = badgeData.sections.length;
+            let currentSection = 0;
+            for (let section of badgeData.sections) {
+                currentSection++;
+                const sectionType = BadgeSectionHelper.getSectionType(currentSection, sectionsCount);
+                const fontStyle = badgeStyle.commonTextStyle.fontStyle;
+                const sectionTextRect = SvgTagsHelper.getRectText(section.text, fontStyle, this.caller);
+                const sectionWidth = badgeStyle.indent * 2 + sectionTextRect.width;
+                const sectionHeight = badgeStyle.indent * 2 + sectionTextRect.height;
+                const sectionText = SvgTagsHelper.createText(section.text);
+                sectionText
+                    .fontFamily(fontStyle.fontFamily)
+                    .fontSize(fontStyle.fontSize)
+                    .fill(fontStyle.fontColor)
+                    .setX(badgeWidth + sectionWidth / 2)
+                    .setY(sectionHeight / 2);
+                sectionText.setAttribute("text-anchor", "middle");
+                sectionText.setAttribute("alignment-baseline", "central");
+                const sectionTextShadow = SvgTagsHelper.createText(section.text);
+                sectionTextShadow
+                    .fontFamily(fontStyle.fontFamily)
+                    .fontSize(fontStyle.fontSize)
+                    .fill(fontStyle.fontShadowColor)
+                    .fillOpacity("0.3")
+                    .setX(badgeWidth + sectionWidth / 2)
+                    .setY(sectionHeight / 2 + 1);
+                sectionTextShadow.setAttribute("text-anchor", "middle");
+                sectionTextShadow.setAttribute("alignment-baseline", "central");
+                if (section.bcgColor === undefined) {
+                    section.bcgColor = badgeStyle.commonTextStyle.backgroundColor;
+                }
+                const sectionRect = SvgTagsHelper.createSection(sectionType, badgeWidth, 0, sectionWidth, sectionHeight, badgeStyle.radius, section.bcgColor);
+                badgeWidth += sectionWidth;
+                if (badgeHeight < sectionHeight) {
+                    badgeHeight = sectionHeight;
+                }
+                badgeMainGroup.appendChild(sectionRect);
+                badgeMainGroup.appendChild(sectionTextShadow);
+                badgeMainGroup.appendChild(sectionText);
             }
-        };
+            const gradienId = "badge-gradient-id";
+            const badgeGradient = SvgTagsHelper.createLinearGradient(gradienId, "0%", "0%", "0%", "90%", "0%", "90%", "white", "black");
+            const badgeGradientRect = SvgTagsHelper.createSimpleRoundedRect(0, 0, badgeWidth, badgeHeight, badgeStyle.radius, `url(#${gradienId})`);
+            badgeMainGroup.appendChild(badgeGradientRect);
+            switch (buildType) {
+                case BuildType.Full:
+                    {
+                        const badge = SvgTagsHelper.createSvg("svg-badge");
+                        badge.appendChild(badgeGradient);
+                        badge.appendChild(badgeMainGroup);
+                        badge
+                            .setWidth(badgeWidth)
+                            .setHeight(badgeHeight);
+                        this.targetHtmlElement.appendChild(badge);
+                        break;
+                    }
+                case BuildType.InsideSvg:
+                    {
+                        this.targetSvgElement.appendChild(badgeGradient);
+                        this.targetSvgElement.appendChild(badgeMainGroup);
+                        this.targetSvgElement
+                            .setWidth(badgeWidth)
+                            .setHeight(badgeHeight);
+                        break;
+                    }
+                default:
+                    throw Error("Unknown BuildType!");
+            }
+        }
+        buildBadgeFromJson(badgeDataPath, buildType) {
+            let data;
+            const req = new XMLHttpRequest();
+            req.open("get", badgeDataPath, true);
+            req.send();
+            req.onreadystatechange = () => {
+                if (req.readyState !== 4)
+                    return;
+                if (req.status !== 200) {
+                    console.log(`Error while loading .json data! Request status: ${req.status} : ${req.statusText}`);
+                }
+                else {
+                    data = JSON.parse(req.responseText);
+                    this.buildSvg(this.style, data, buildType);
+                }
+            };
+        }
     }
-}
-function buildSvgBadge(repoData) {
-    const repoName = repoData.name;
-    const place = repoData.place;
-    const r = 3;
-    const h = 20;
-    const textSize = 11;
-    const draw = SVG("mysvg").size(200, h);
-    const str = repoName + " is #" + place;
-    const test = "test";
-    const fontFamily = "Verdana";
-    const txtRepoName = draw.text(str);
-    txtRepoName.size(textSize);
-    txtRepoName.x(5);
-    txtRepoName.fill(Color.black);
-    txtRepoName.font({
-        family: fontFamily,
-        y: 0
-    });
-    const txtRepoNameShadow = draw.text(str);
-    txtRepoNameShadow.size(textSize);
-    txtRepoNameShadow.x(5);
-    txtRepoNameShadow.fill(Color.white);
-    txtRepoNameShadow.font({
-        family: fontFamily,
-        y: 1
-    });
-    const rectRepoName = draw.rect(txtRepoName.length() + 10, h);
-    rectRepoName.attr({ fill: Color.silver });
-    rectRepoName.radius(r);
-    const txt = draw.text(test);
-    txt.x(rectRepoName.width());
-    txt.y(7);
-    txt.fill("#855");
-    txt.font({
-        background: "#155",
-        family: "Verdana",
-        size: 11
-    });
-    txtRepoNameShadow.front();
-    txtRepoName.front();
-    txt.front();
-}
-function onLoadFunc() {
-    const req = new XMLHttpRequest();
-    var data;
-    req.open("get", "./data.json", true);
-    req.send();
-    req.onreadystatechange = () => {
-        if (req.readyState !== 4)
-            return;
-        if (req.status !== 200) {
-            console.log(req.status + ": " + req.statusText);
+    function buildBadgeById(id, dataPath = "./badgeData.json") {
+        const target = document.getElementById(id);
+        const badge = new Badge();
+        badge.setHtmlTarget(target);
+        badge.buildBadgeFromJson(dataPath, BuildType.Full);
+    }
+        function buildBadgeInsideSvg(svgId, dataPath = "./badgeData.json") {
+            const target = document.getElementById(svgId);
+            const badge = new Badge();
+            badge.setSvgTarget(target);
+            badge.buildBadgeFromJson(dataPath, BuildType.InsideSvg);
         }
-        else {
-            data = JSON.parse(req.responseText);
-            buildSvgBadge(data);
-        }
-    };
-}
-function buildBadgeById(id) {
-    const target = document.getElementById(id);
-    const badge = new Badge(target);
-    badge.buildBadge("./badgeData.json");
-}
-//# sourceMappingURL=badge.js.map
+            function buildSvgBadge(el, dataPath = "./badgeData.json") {
+                const badge = new Badge();
+                badge.setSvgTarget(el);
+                badge.setCaller(el);
+                badge.buildBadgeFromJson(dataPath, BuildType.InsideSvg);
+            }
+                //# sourceMappingURL=badge.js.map
