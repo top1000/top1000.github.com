@@ -1,3 +1,8 @@
-<svg id = "language-badge" xmlns="http://www.w3.org/2000/svg" height="23" width="20" onload="myLanguageBadge(this)">
-  <script type="text/javascript" href="./../badge.js"></script>
+<svg id = "language-badge" xmlns="http://www.w3.org/2000/svg" height="23" width="20">
+  <script type="text/javascript" href="./../badge.js">
+  </script>
+  <script type="text/javascript">
+    var el = document.getElementById("language-badge");
+    el.addEventListener("onload", myLanguageBadge(el));
+  </script>
 </svg>
