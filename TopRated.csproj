@@ -24,6 +24,7 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="badge.js" />
+    <Content Include="Badges\Test.svg" />
     <Content Include="Badges\LanguageBadge.svg" />
     <Content Include="Example\badge.svg" />
     <Content Include="index.html" />
