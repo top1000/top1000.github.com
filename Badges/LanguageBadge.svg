@@ -1,0 +1,3 @@
+<svg id = "language-badge" xmlns="http://www.w3.org/2000/svg" height="23" width="20" onload="myLanguageBadge(this)">
+  <script type="text/javascript" href="https://rawgit.com/toprated/badge.ts/master/badge/build/badge.js"></script>
+</svg>
